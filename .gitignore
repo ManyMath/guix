@@ -1,1 +1,18 @@
-# This file will be replaced by flutter create.
+# Flutter
+.dart_tool/
+.packages
+build/
+*.iml
+.metadata
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
