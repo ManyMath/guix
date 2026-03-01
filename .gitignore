@@ -13,6 +13,13 @@ build/
 *.swp
 *.swo
 
+# Flutter SDK (fetched by scripts/fetch-flutter.sh)
+.flutter-sdk/
+
+# Guix profiles
+.guix-profile
+*-link
+
 # OS
 .DS_Store
 Thumbs.db
