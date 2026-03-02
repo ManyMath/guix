@@ -1,0 +1,17 @@
+name: poc_host_app
+description: Proof-of-concept host app demonstrating guix-flutter-scripts integration.
+version: 1.0.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

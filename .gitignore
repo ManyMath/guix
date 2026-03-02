@@ -1,0 +1,26 @@
+# Flutter
+.dart_tool/
+.packages
+build/
+*.iml
+.metadata
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Fetched SDKs
+.flutter-sdk/
+.android-sdk/
+
+# Guix profiles
+.guix-profile
+*-link
+
+# OS
+.DS_Store
+Thumbs.db
