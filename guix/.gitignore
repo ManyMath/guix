@@ -1,0 +1,25 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Fetched SDKs (host project should also gitignore these)
+.flutter-sdk/
+.android-sdk/
+
+# Build artifacts
+build/
+
+# Guix profiles
+.guix-profile
+*-link
+
+# Host project config (generated from templates)
+guix-flutter.conf
+flutter_version.env
+android_sdk_version.env
+
+# OS
+.DS_Store
+Thumbs.db

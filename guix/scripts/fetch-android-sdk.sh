@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 # Download and configure a pinned Android SDK using Google's cmdline-tools.
 # The SDK is stored in .android-sdk/ (git-ignored).
-# Requires `java` on PATH (run inside `guix shell -m guix/android.scm`).
+# Requires `java` on PATH (run inside `guix shell -m $GUIX_FLUTTER_DIR/manifests/android.scm`).
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Resolve paths: scripts live at <root>/<guix-dir>/scripts/
+GUIX_FLUTTER_DIR="$(basename "$(cd "$(dirname "$0")/.." && pwd)")"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Load project config if present.
+CONF="$PROJECT_ROOT/guix-flutter.conf"
+[ -f "$CONF" ] && source "$CONF"
+
 source "$PROJECT_ROOT/android_sdk_version.env"
 
 SDK_DIR="$PROJECT_ROOT/.android-sdk"
@@ -13,7 +20,7 @@ SDKMANAGER="$SDK_DIR/cmdline-tools/latest/bin/sdkmanager"
 # Check for java: needed by sdkmanager.
 if ! command -v java &>/dev/null; then
     echo "ERROR: java not found on PATH."
-    echo "Run inside:  guix shell -m guix/android.scm"
+    echo "Run inside:  guix shell -m $GUIX_FLUTTER_DIR/manifests/android.scm"
     exit 1
 fi
 

@@ -1,9 +1,9 @@
 ;; Android development manifest.
 ;;
 ;; Enter this environment with:
-;;   guix shell -m guix/android.scm
+;;   guix shell -m manifests/android.scm
 ;; Or reproducibly:
-;;   guix time-machine -C guix/channels.scm -- shell -m guix/android.scm
+;;   guix time-machine -C manifests/channels.scm -- shell -m manifests/android.scm
 
 (use-modules (gnu packages)
              (gnu packages base)

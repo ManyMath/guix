@@ -4,7 +4,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-OUT="$SCRIPT_DIR/channels.scm"
+OUT="$SCRIPT_DIR/manifests/channels.scm"
 
 echo "Querying current Guix channel commits..."
 guix describe -f channels > "$OUT"

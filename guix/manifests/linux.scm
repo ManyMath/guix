@@ -1,9 +1,9 @@
 ;; Linux (Ubuntu 24.04 target) development manifest.
 ;;
 ;; Enter this environment with:
-;;   guix shell -m guix/linux.scm
+;;   guix shell -m manifests/linux.scm
 ;; Or reproducibly:
-;;   guix time-machine -C guix/channels.scm -- shell -m guix/linux.scm
+;;   guix time-machine -C manifests/channels.scm -- shell -m manifests/linux.scm
 
 (use-modules (gnu packages)
              (gnu packages base)

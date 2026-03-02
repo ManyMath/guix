@@ -6,7 +6,14 @@
 #   ./scripts/shell-android.sh --pinned     # uses pinned channels (fully reproducible)
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Resolve paths: scripts live at <root>/<guix-dir>/scripts/
+GUIX_FLUTTER_DIR="$(basename "$(cd "$(dirname "$0")/.." && pwd)")"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Load project config if present.
+CONF="$PROJECT_ROOT/guix-flutter.conf"
+[ -f "$CONF" ] && source "$CONF"
+
 FLUTTER_DIR="$PROJECT_ROOT/.flutter-sdk/flutter"
 ANDROID_DIR="$PROJECT_ROOT/.android-sdk"
 
@@ -24,8 +31,8 @@ fi
 GUIX_CMD=(guix)
 
 if [ "${1:-}" = "--pinned" ]; then
-    echo "Using pinned channels from guix/channels.scm"
-    GUIX_CMD=(guix time-machine -C "$PROJECT_ROOT/guix/channels.scm" --)
+    echo "Using pinned channels from $GUIX_FLUTTER_DIR/manifests/channels.scm"
+    GUIX_CMD=(guix time-machine -C "$PROJECT_ROOT/$GUIX_FLUTTER_DIR/manifests/channels.scm" --)
 fi
 
 echo "Entering Guix shell with Android Flutter dependencies..."
@@ -33,7 +40,7 @@ echo "Flutter SDK: $FLUTTER_DIR"
 echo "Android SDK: $ANDROID_DIR"
 
 exec "${GUIX_CMD[@]}" shell \
-    -m "$PROJECT_ROOT/guix/android.scm" \
+    -m "$PROJECT_ROOT/$GUIX_FLUTTER_DIR/manifests/android.scm" \
     -- bash --init-file <(cat <<INITEOF
 export PATH="$FLUTTER_DIR/bin:\$PATH"
 export FLUTTER_ROOT="$FLUTTER_DIR"

@@ -3,7 +3,14 @@
 # This is a non-interactive build: suitable for CI.
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Resolve paths: scripts live at <root>/<guix-dir>/scripts/
+GUIX_FLUTTER_DIR="$(basename "$(cd "$(dirname "$0")/.." && pwd)")"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Load project config if present.
+CONF="$PROJECT_ROOT/guix-flutter.conf"
+[ -f "$CONF" ] && source "$CONF"
+
 FLUTTER_DIR="$PROJECT_ROOT/.flutter-sdk/flutter"
 ANDROID_DIR="$PROJECT_ROOT/.android-sdk"
 
@@ -19,7 +26,7 @@ fi
 
 GUIX_CMD=(guix)
 if [ "${1:-}" = "--pinned" ]; then
-    GUIX_CMD=(guix time-machine -C "$PROJECT_ROOT/guix/channels.scm" --)
+    GUIX_CMD=(guix time-machine -C "$PROJECT_ROOT/$GUIX_FLUTTER_DIR/manifests/channels.scm" --)
 fi
 
 echo "Building Flutter Android app in Guix shell..."
@@ -29,7 +36,7 @@ export FLUTTER_GUIX_PROJECT_ROOT="$PROJECT_ROOT"
 export FLUTTER_GUIX_ANDROID_SDK="$ANDROID_DIR"
 
 "${GUIX_CMD[@]}" shell \
-    -m "$PROJECT_ROOT/guix/android.scm" \
+    -m "$PROJECT_ROOT/$GUIX_FLUTTER_DIR/manifests/android.scm" \
     --preserve='^FLUTTER_GUIX_' \
     -- bash -c '
 set -euo pipefail

@@ -1,0 +1,6 @@
+# guix-flutter.conf — project-specific settings for guix-flutter-scripts.
+# Copy this file to your project root as guix-flutter.conf and customize.
+
+# Where guix-flutter-scripts lives relative to PROJECT_ROOT.
+# Default: guix
+GUIX_FLUTTER_DIR="guix"

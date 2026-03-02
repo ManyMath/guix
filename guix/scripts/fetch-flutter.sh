@@ -4,7 +4,14 @@
 # Supports x86_64 and arm64.
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Resolve paths: scripts live at <root>/<guix-dir>/scripts/
+GUIX_FLUTTER_DIR="$(basename "$(cd "$(dirname "$0")/.." && pwd)")"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Load project config if present.
+CONF="$PROJECT_ROOT/guix-flutter.conf"
+[ -f "$CONF" ] && source "$CONF"
+
 source "$PROJECT_ROOT/flutter_version.env"
 
 SDK_DIR="$PROJECT_ROOT/.flutter-sdk"
