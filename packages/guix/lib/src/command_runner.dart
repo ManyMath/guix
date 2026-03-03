@@ -4,6 +4,8 @@ import 'package:guix/src/commands/setup_command.dart';
 import 'package:guix/src/commands/shell_command.dart';
 import 'package:guix/src/commands/build_command.dart';
 import 'package:guix/src/commands/doctor_command.dart';
+import 'package:guix/src/commands/pin_command.dart';
+import 'package:guix/src/commands/clean_command.dart';
 
 class GuixCommandRunner extends CommandRunner<int> {
   GuixCommandRunner()
@@ -22,6 +24,8 @@ class GuixCommandRunner extends CommandRunner<int> {
     addCommand(ShellCommand());
     addCommand(BuildCommand());
     addCommand(DoctorCommand());
+    addCommand(PinCommand());
+    addCommand(CleanCommand());
   }
 
   @override
