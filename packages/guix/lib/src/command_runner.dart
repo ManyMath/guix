@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:guix/src/commands/init_command.dart';
+import 'package:guix/src/commands/setup_command.dart';
 
 class GuixCommandRunner extends CommandRunner<int> {
   GuixCommandRunner()
@@ -14,6 +15,7 @@ class GuixCommandRunner extends CommandRunner<int> {
       ..addFlag('version', negatable: false, help: 'Print version and exit');
 
     addCommand(InitCommand());
+    addCommand(SetupCommand());
   }
 
   @override
