@@ -69,3 +69,13 @@ echo "Next steps:"
 echo "  1. Edit flutter_version.env to pin your Flutter version"
 echo "  2. Run 'make guix-shell' to enter the dev shell"
 echo "  3. Run 'make guix-build' for a reproducible build"
+echo ""
+
+# Offer the Dart CLI as an optional upgrade path.
+if command -v dart &>/dev/null; then
+    echo "Dart detected: for the full config-driven CLI:"
+    echo "  dart pub global activate guix"
+    echo ""
+    echo "Once installed, use 'guix_dart sync' to keep .env files current"
+    echo "after editing guix.yaml, or run 'make guix-sync'."
+fi
