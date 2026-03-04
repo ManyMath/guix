@@ -21,6 +21,11 @@ build/
 .guix-profile
 *-link
 
+# Generated config (from .example templates)
+guix-flutter.conf
+flutter_version.env
+android_sdk_version.env
+
 # OS
 .DS_Store
 Thumbs.db

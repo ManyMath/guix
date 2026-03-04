@@ -9,7 +9,8 @@ class CleanCommand extends Command<int> {
   final String description = 'Remove fetched SDKs and build artifacts.';
 
   CleanCommand() {
-    argParser.addFlag('all', abbr: 'a', help: 'Remove everything');
+    argParser
+      ..addFlag('all', abbr: 'a', help: 'Remove everything (SDKs + build artifacts)');
   }
 
   @override
@@ -22,6 +23,7 @@ class CleanCommand extends Command<int> {
     if (all || targets.isEmpty) {
       dirs.addAll(['.flutter-sdk', '.android-sdk', 'build']);
     } else {
+      // Platform-specific clean
       for (final target in targets) {
         switch (target) {
           case 'linux':

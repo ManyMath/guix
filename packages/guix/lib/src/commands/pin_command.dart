@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
-import 'package:guix/src/config/project_config.dart';
+import 'package:guix/src/config/guix_config.dart';
+import 'package:guix/src/guix/guix_runner.dart';
 
 class PinCommand extends Command<int> {
   @override
@@ -11,32 +12,44 @@ class PinCommand extends Command<int> {
 
   @override
   Future<int> run() async {
-    final config = ProjectConfig.load();
-    final script = config.pinChannelsScript;
+    final verbose = globalResults!['verbose'] as bool;
 
-    if (!File(script).existsSync()) {
-      stderr.writeln('Pin script not found: $script');
+    // Try to read config for channels path, fall back to default
+    String channelsPath;
+    try {
+      final config = GuixConfig.load();
+      channelsPath = config.channelsPath;
+    } on FileSystemException {
+      channelsPath = 'guix/channels.scm';
+    }
+
+    final guix = GuixRunner(verbose: verbose);
+
+    if (!await guix.isInstalled()) {
+      stderr.writeln('Error: guix not found on PATH.');
       return 1;
     }
 
-    print('Pinning Guix channels...');
-    final process = await Process.start(
-      'bash', [script],
-      mode: ProcessStartMode.inheritStdio,
-    );
-    final exitCode = await process.exitCode;
+    // Ensure parent directory exists
+    final dir = File(channelsPath).parent;
+    if (!dir.existsSync()) dir.createSync(recursive: true);
 
-    if (exitCode == 0) {
-      // Show the pinned commit.
-      final channelsFile = File(config.channelsPath);
-      if (channelsFile.existsSync()) {
-        final content = channelsFile.readAsStringSync();
-        final match = RegExp(r'\(commit\s+"([a-f0-9]+)"\)').firstMatch(content);
-        if (match != null) {
-          print('Pinned to commit: ${match.group(1)}');
-        }
+    print('Pinning channels to $channelsPath...');
+    final result = await guix.pinChannels(channelsPath);
+
+    if (result.exitCode == 0) {
+      print('Channels pinned successfully.');
+      // Show the commit
+      final content = File(channelsPath).readAsStringSync();
+      final match = RegExp(r'\(commit\s+"([a-f0-9]+)"\)').firstMatch(content);
+      if (match != null) {
+        print('Commit: ${match.group(1)}');
       }
+      return 0;
+    } else {
+      stderr.writeln('Failed to pin channels.');
+      stderr.writeln(result.stderr);
+      return 1;
     }
-    return exitCode;
   }
 }

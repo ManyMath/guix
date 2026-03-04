@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
-import 'package:guix/src/config/project_config.dart';
+import 'package:guix/src/config/guix_config.dart';
+import 'package:guix/src/guix/guix_runner.dart';
 
 class ShellCommand extends Command<int> {
   @override
@@ -10,8 +11,8 @@ class ShellCommand extends Command<int> {
   final String description = 'Enter an interactive Guix development shell.';
 
   ShellCommand() {
-    argParser.addFlag('pinned', abbr: 'p',
-        help: 'Use pinned Guix channels (slower, reproducible)');
+    argParser
+      ..addFlag('pinned', abbr: 'p', help: 'Use pinned Guix channels (slower, reproducible)');
   }
 
   @override
@@ -21,35 +22,53 @@ class ShellCommand extends Command<int> {
   Future<int> run() async {
     if (argResults!.rest.isEmpty) {
       stderr.writeln('Error: platform argument required.');
-      stderr.writeln('Available: ${_availablePlatforms()}');
+      printUsage();
       return 1;
     }
 
-    final platform = argResults!.rest.first;
+    final platformName = argResults!.rest.first;
     final pinned = argResults!['pinned'] as bool;
-    final config = ProjectConfig.load();
+    final verbose = globalResults!['verbose'] as bool;
+    final config = GuixConfig.load();
 
-    if (!config.hasShellScript(platform)) {
-      stderr.writeln('No shell script for platform: $platform');
-      stderr.writeln('Available: ${config.platforms.join(', ')}');
+    final platform = config.platforms[platformName];
+    if (platform == null) {
+      stderr.writeln('Unknown platform: $platformName');
+      stderr.writeln('Available: ${config.platformNames.join(', ')}');
       return 1;
     }
 
-    final script = config.scriptPath('shell-$platform.sh');
-    final args = pinned ? ['--pinned'] : <String>[];
-
-    final process = await Process.start(
-      'bash', [script, ...args],
-      mode: ProcessStartMode.inheritStdio,
-    );
-    return process.exitCode;
-  }
-
-  String _availablePlatforms() {
-    try {
-      return ProjectConfig.load().platforms.join(', ');
-    } catch (_) {
-      return '(unknown: no config found)';
+    // Validate SDK exists
+    final sdkDir = Directory('.flutter-sdk/flutter');
+    if (!sdkDir.existsSync()) {
+      stderr.writeln('Flutter SDK not found. Run: guix_dart setup');
+      return 1;
     }
+
+    // Validate manifest exists
+    if (!File(platform.manifest).existsSync()) {
+      stderr.writeln('Manifest not found: ${platform.manifest}');
+      stderr.writeln('Run: guix_dart init $platformName');
+      return 1;
+    }
+
+    final guixRunner = GuixRunner(verbose: verbose);
+    final channelsFile = pinned ? config.channelsPath : null;
+    if (pinned && !File(config.channelsPath).existsSync()) {
+      stderr.writeln('Channels file not found: ${config.channelsPath}');
+      stderr.writeln('Run: guix_dart pin');
+      return 1;
+    }
+
+    final sdkPath = sdkDir.absolute.path;
+    print('Entering $platformName shell${pinned ? ' (pinned)' : ''}...');
+
+    return guixRunner.enterShell(
+      manifest: platform.manifest,
+      channelsFile: channelsFile,
+      env: platform.env,
+      preserveVars: platform.preserve,
+      flutterSdkPath: sdkPath,
+    );
   }
 }

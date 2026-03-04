@@ -6,14 +6,14 @@ import 'package:guix/src/commands/build_command.dart';
 import 'package:guix/src/commands/doctor_command.dart';
 import 'package:guix/src/commands/pin_command.dart';
 import 'package:guix/src/commands/clean_command.dart';
+import 'package:guix/src/commands/eject_command.dart';
+import 'package:guix/src/commands/sync_command.dart';
 
 class GuixCommandRunner extends CommandRunner<int> {
   GuixCommandRunner()
       : super(
           'guix_dart',
-          'Reproducible Dart and Flutter builds with GNU Guix.\n\n'
-          'Wraps the guix-flutter-scripts shell scripts with a discoverable CLI.\n'
-          'Install: dart pub global activate guix',
+          'Reproducible Dart and Flutter builds with GNU Guix.',
         ) {
     argParser
       ..addFlag('verbose', abbr: 'v', help: 'Show underlying commands')
@@ -26,6 +26,8 @@ class GuixCommandRunner extends CommandRunner<int> {
     addCommand(DoctorCommand());
     addCommand(PinCommand());
     addCommand(CleanCommand());
+    addCommand(EjectCommand());
+    addCommand(SyncCommand());
   }
 
   @override
