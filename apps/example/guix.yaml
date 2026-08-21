@@ -8,7 +8,7 @@ flutter:
   version: "3.24.5"
   channel: stable
   checksums:
-    x86_64: ""
+    x86_64: "a7c82f551a9eae018e078f6bb186171e5a77920d35a3d75a61d9a593d0a9e4ae"
     aarch64: ""
 
 guix:

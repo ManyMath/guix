@@ -15,6 +15,7 @@ cmake_policy(SET CMP0063 NEW)
 
 # Load bundled libraries from the lib/ directory relative to the binary.
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 # Root filesystem for cross-building.
 if(FLUTTER_TARGET_PLATFORM_SYSROOT)
@@ -44,6 +45,10 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE -Wall -Werror)
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
+  target_compile_options(${TARGET} PRIVATE
+    -ffile-prefix-map=${CMAKE_SOURCE_DIR}=.
+  )
+  target_link_options(${TARGET} PRIVATE -Wl,--build-id=none)
 endfunction()
 
 # Flutter library and tool build rules.
@@ -117,7 +122,7 @@ endforeach(bundled_library)
 set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/linux/")
 install(DIRECTORY "${NATIVE_ASSETS_DIR}"
    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-   COMPONENT Runtime)
+   COMPONENT Runtime OPTIONAL)
 
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.

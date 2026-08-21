@@ -22,6 +22,7 @@ actual_hash="$(
     --owner=0 \
     --group=0 \
     --numeric-owner \
+    --mode='u+rwX,go+rX,go-w' \
     --format=gnu \
     -cf - \
     -C "$bundle_dir" \

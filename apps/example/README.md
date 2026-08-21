@@ -18,15 +18,16 @@ dart run ../../packages/guix/bin/guix_dart.dart build linux
 Expected normalized Linux bundle hash:
 
 ```text
-6ff79e75e7fdb074f73bfa7c13095db2b6c4b92bdd25b0928d7303b618594d0a
+c8f2de178fa1c21d6bb88ce50d6b5925b4c0ebda8a8d6e939bdd450e18ce38dd
 ```
 
 That value is stored in `expected-hashes/linux-x86_64.sha256`.
 It only applies to this app and the pinned toolchain in this directory.
 
 The first command fetches Flutter `3.24.5` into `.flutter-sdk/` if it is not
-already present. If you also want to pin the Flutter download itself, fill in
-the `flutter.checksums` values in `guix.yaml` after `setup` prints them.
+already present. The official Flutter 3.24.5 Linux x86_64 archive SHA-256 is
+pinned in `guix.yaml`, so setup verifies that download. The aarch64 checksum
+remains empty.
 
 If you prefer shorter commands, the same flow is wrapped in `make guix-setup`,
 `make guix-build`, and `make verify-linux`.
