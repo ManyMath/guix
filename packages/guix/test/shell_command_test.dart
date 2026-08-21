@@ -74,8 +74,7 @@ void main() {
 
     test('--pinned succeeds when channels file exists', () {
       Directory('${tmp.path}/guix').createSync();
-      File('${tmp.path}/guix/channels.scm')
-          .writeAsStringSync('; channels');
+      File('${tmp.path}/guix/channels.scm').writeAsStringSync('; channels');
 
       final channelsFile = File('${tmp.path}/guix/channels.scm');
       expect(channelsFile.existsSync(), isTrue);
@@ -121,8 +120,9 @@ platforms:
       output: build/
 ''');
 
-      // When pinned is true, channelsFile = config.channelsPath
-      const pinned = true;
+      // Explicit --pinned mode sets channelsFile from config.
+      final pinned =
+          ShellCommand().argParser.parse(['--pinned'])['pinned'] as bool;
       final channelsFile = pinned ? config.channelsPath : null;
       expect(channelsFile, 'guix/channels.scm');
     });
@@ -144,8 +144,8 @@ platforms:
       output: build/
 ''');
 
-      // When pinned is false, channelsFile is null -- no file check needed
-      const pinned = false;
+      // Shell defaults to unpinned mode, so no file check is needed.
+      final pinned = ShellCommand().argParser.parse([])['pinned'] as bool;
       final channelsFile = pinned ? config.channelsPath : null;
       expect(channelsFile, isNull);
     });

@@ -121,7 +121,8 @@ platforms:
       expect(config.platformFor('windows'), isNull);
     });
 
-    test('fallback: when profile not found, build uses target from platforms', () {
+    test('fallback: when profile not found, build uses target from platforms',
+        () {
       // In BuildCommand.run(): resolvedName = profileName ?? target
       // config.platformFor(resolvedName) ?? config.platforms[target]
       // If profileName is null, resolvedName == target, and it looks up directly
@@ -203,13 +204,14 @@ platforms:
       output: build/
 ''');
 
-      // When pinned is true, channelsFile = config.channelsPath
-      const pinned = true;
+      // Build defaults to pinned mode, so channelsFile = config.channelsPath.
+      final pinned = BuildCommand().argParser.parse([])['pinned'] as bool;
       final channelsFile = pinned ? config.channelsPath : null;
       expect(channelsFile, 'guix/channels.scm');
 
-      // When pinned is false, channelsFile = null
-      const notPinned = false;
+      // Explicit --no-pinned mode leaves channelsFile unset.
+      final notPinned =
+          BuildCommand().argParser.parse(['--no-pinned'])['pinned'] as bool;
       final noChannels = notPinned ? config.channelsPath : null;
       expect(noChannels, isNull);
     });
